@@ -1,0 +1,131 @@
+# Default configuration for Face Authentication System
+
+# Model configuration
+model:
+  backbone: "facenet"  # Options: facenet, arcface, mobilefacenet, efficientnet
+  embedding_dim: 512
+  pretrained: true
+  freeze_backbone: false
+  
+  # Face recognition specific
+  face_recognition:
+    threshold: 0.6
+    distance_metric: "cosine"  # Options: cosine, euclidean, l2
+    normalize_embeddings: true
+    
+  # Liveness detection
+  liveness:
+    enabled: true
+    model_type: "cnn"  # Options: cnn, transformer, ensemble
+    threshold: 0.5
+    anti_spoofing: true
+
+# Data configuration
+data:
+  image_size: 224
+  channels: 3
+  normalize: true
+  augmentation: true
+  
+  # Data augmentation
+  augmentation_params:
+    rotation: 15
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.2
+    hue: 0.1
+    horizontal_flip: true
+    
+  # Dataset splits
+  splits:
+    train_ratio: 0.7
+    val_ratio: 0.15
+    test_ratio: 0.15
+    random_seed: 42
+
+# Training configuration
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 1e-4
+  epochs: 100
+  patience: 10
+  min_delta: 0.001
+  
+  # Optimizer
+  optimizer: "adam"  # Options: adam, sgd, adamw
+  scheduler: "cosine"  # Options: cosine, step, plateau
+  
+  # Loss functions
+  loss:
+    face_recognition: "triplet"  # Options: triplet, contrastive, arcface
+    liveness: "binary_crossentropy"
+    
+  # Regularization
+  dropout: 0.1
+  label_smoothing: 0.1
+
+# Evaluation configuration
+evaluation:
+  # Biometric metrics
+  eer_target: 0.01
+  min_dcf_p_target: 0.01
+  min_dcf_c_miss: 1.0
+  min_dcf_c_fa: 1.0
+  
+  # Threshold optimization
+  threshold_optimization:
+    method: "eer"  # Options: eer, min_dcf, f1_score
+    cv_folds: 5
+    
+  # Cross-validation
+  cross_validation:
+    enabled: true
+    folds: 5
+    stratified: true
+
+# Privacy and security
+privacy:
+  # Data protection
+  hash_user_ids: true
+  redact_logs: true
+  local_processing_only: true
+  
+  # Differential privacy (experimental)
+  differential_privacy:
+    enabled: false
+    epsilon: 1.0
+    delta: 1e-5
+    
+  # Data retention
+  retention_policy:
+    max_age_days: 365
+    auto_delete: false
+
+# Logging and monitoring
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/face_auth.log"
+  max_size_mb: 100
+  backup_count: 5
+  
+# Paths
+paths:
+  data_dir: "data"
+  models_dir: "models"
+  logs_dir: "logs"
+  assets_dir: "assets"
+  configs_dir: "configs"
+  
+# Device configuration
+device:
+  auto_detect: true
+  preferred: "cuda"  # Options: cuda, mps, cpu
+  mixed_precision: true
+  
+# Reproducibility
+reproducibility:
+  seed: 42
+  deterministic: true
+  benchmark: false
